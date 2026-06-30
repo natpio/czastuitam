@@ -12,21 +12,16 @@ st.set_page_config(
 # --- STYLIZACJA RODEO / COWBOY (CSS) ---
 st.markdown("""
     <style>
-    /* Główny motyw - kolory pustyni, skóry i drewna */
     .stApp {
         background-color: #f4ece1;
         color: #5c3a21;
         font-family: 'Courier New', Courier, monospace;
     }
-    
-    /* Nagłówki */
     h1, h2, h3 {
         color: #8b4513 !important;
         font-weight: bold;
         text-shadow: 1px 1px 2px #d2b48c;
     }
-    
-    /* Karty z czasem */
     .time-card {
         background-color: #d2b48c;
         border: 3px solid #8b4513;
@@ -36,14 +31,12 @@ st.markdown("""
         box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
         margin-bottom: 20px;
     }
-    
     .time-title {
         font-size: 1.5rem;
         font-weight: bold;
         color: #5c3a21;
         margin-bottom: 5px;
     }
-    
     .time-display {
         font-size: 2.2rem;
         font-weight: bold;
@@ -53,11 +46,17 @@ st.markdown("""
         border-radius: 5px;
         letter-spacing: 2px;
     }
-    
-    /* Stopka i inne elementy */
     .leather-text {
         color: #a0522d;
         font-style: italic;
+    }
+    /* Stylizacja przycisku w formularzu */
+    .stButton>button {
+        background-color: #8b4513 !important;
+        color: white !important;
+        border-radius: 5px !important;
+        font-weight: bold !important;
+        width: 100%;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -97,30 +96,38 @@ with col2:
 
 st.write("---")
 
-# --- KALKULATOR PRZYSZŁEGO CZASU (ZŁAP CZAS NA LASSO) ---
+# --- KALKULATOR ZAKLESZCZONY W FORMULARZU ---
 st.subheader("🌵 Złap czas na lasso (Kalkulator)")
 
-wybór = st.radio("Z której strefy startujesz, kowboju?", ("Chcę podać godzinę w Polsce", "Chcę podać godzinę w Iowa"))
+# Inicjalizacja domyślnego czasu w sesji (tylko raz przy pierwszym wejściu)
+if 'saved_time' not in st.session_state:
+    st.session_state.saved_time = datetime.now().time()
 
-wybrany_czas = st.time_input("Ustaw czas na zegarze:", datetime.now().time())
-
-# Tworzymy "czysty" obiekt datetime bez przypisanej strefy (naive)
-czysta_data_i_czas = datetime.combine(datetime.today(), wybrany_czas)
-
-if wybór == "Chcę podać godzinę w Polsce":
-    # Wskazujemy, że podany czas to godzina w PL i przeliczamy na Iowa
-    pl_dt = tz_polska.localize(czysta_data_i_czas)
-    ia_dt = pl_dt.astimezone(tz_iowa)
+# Cały formularz blokuje odświeżanie wartości dopóki nie klikniesz przycisku
+with st.form(key='cowboy_form'):
+    wybór = st.radio(
+        "Z której strefy startujesz, kowboju?", 
+        ("Chcę podać godzinę w Polsce", "Chcę podać godzinę w Iowa")
+    )
     
-    st.info(f"🎯 Gdy w **Polsce** jest **{pl_dt.strftime('%H:%M')}**, na rancho w **Iowa** zegary wskazują **{ia_dt.strftime('%H:%M')}**.")
-
-else:
-    # Wskazujemy, że podany czas to godzina w Iowa i przeliczamy na PL
-    ia_dt = tz_iowa.localize(czysta_data_i_czas)
-    pl_dt = ia_dt.astimezone(tz_polska)
+    wybrany_czas = st.time_input("Ustaw czas na zegarze:", value=st.session_state.saved_time)
     
-    st.info(f"🎯 Gdy w **Iowa** jest **{ia_dt.strftime('%H:%M')}**, w **Polsce** kowboje widzą już **{pl_dt.strftime('%H:%M')}**.")
+    submit_button = st.form_submit_button(label='🤠 PRZELICZ CZAS ORAZ ZABLOKUJ LASSO')
+
+# Logika wykonuje się po kliknięciu przycisku
+if submit_button:
+    st.session_state.saved_time = wybrany_czas  # Zapisujemy w pamięci sesji, by nie zniknęło
+    czysta_data_i_czas = datetime.combine(datetime.today(), wybrany_czas)
+
+    if wybór == "Chcę podać godzinę w Polsce":
+        pl_dt = tz_polska.localize(czysta_data_i_czas)
+        ia_dt = pl_dt.astimezone(tz_iowa)
+        st.success(f"🎯 Gdy w **Polsce** wybije **{pl_dt.strftime('%H:%M')}**, na rancho w **Iowa** zegary wskażą **{ia_dt.strftime('%H:%M')}**.")
+    else:
+        ia_dt = tz_iowa.localize(czysta_data_i_czas)
+        pl_dt = ia_dt.astimezone(tz_polska)
+        st.success(f"🎯 Gdy w **Iowa** wybije **{ia_dt.strftime('%H:%M')}**, w **Polsce** kowboje zobaczą już **{pl_dt.strftime('%H:%M')}**.")
 
 # --- STOPKA ---
 st.write("---")
-st.markdown("<center> Yee-haw! Aplikacja śmiga szybciej niż Colt 45. 🌵🦅</center>", unsafe_allow_html=True)
+st.markdown("<center> Yee-haw! Teraz czas słucha się Twojego rozkazu! 🌵🦅</center>", unsafe_allow_html=True)
