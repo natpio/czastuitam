@@ -4,136 +4,148 @@ import pytz
 
 # --- KONFIGURACJA STRONY ---
 st.set_page_config(
-    page_title="Rancho Time Rodeo PRO",
-    page_icon="🌵",
+    page_title="Rancho Time Rodeo ULTRA PRO",
+    page_icon="🤠",
     layout="centered"
 )
 
-# --- LEVEL 999 PRO: KINOWY STYL WESTERN + MODYFIKACJA SLIDERÓW ---
+# --- ARCHITEKTURA DZIKIEGO ZACHODU (CSS) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Rye&family=Special+Elite&display=swap');
 
+    /* TŁO: Prawdziwa faktura starych, spalonych słońcem desek saloonu */
     .stApp {
-        background: radial-gradient(circle, #e6ccb2 0%, #b18567 100%);
-        color: #3d2314;
+        background-color: #3a2212;
+        background-image: 
+            linear-gradient(90deg, transparent 50%, rgba(255,255,255,.03) 50%),
+            linear-gradient(rgba(0,0,0,.4) 50%, transparent 50%),
+            linear-gradient(90deg, #4a2c11 0%, #2b1704 100%);
+        background-size: 50px 50px, 12px 12px, 100% 100%;
+        color: #f4ece1;
         font-family: 'Special Elite', monospace;
     }
     
+    /* Naprawiony i podkręcony nagłówek Saloonu */
     .saloon-header {
         font-family: 'Rye', serif;
-        color: #4a2c11;
+        color: #ffb703;
         text-align: center;
-        font-size: 3rem;
-        margin-top: -20px;
+        font-size: 3.5rem;
+        margin-top: -10px;
         margin-bottom: 5px;
-        text-shadow: 3px 3px 0px #ffb703, 5px 5px 0px #2b1704;
-        line-height: 1.2;
+        text-shadow: 4px 4px 0px #110700, -2px -2px 0px #8b4513;
+        letter-spacing: 4px;
     }
     
     .saloon-sub {
         text-align: center;
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         font-style: italic;
-        color: #5c3a21;
-        letter-spacing: 2px;
-        margin-bottom: 30px;
+        color: #ddb892;
+        letter-spacing: 3px;
+        margin-bottom: 40px;
+        text-shadow: 1px 1px 2px #000;
     }
     
+    /* Główne karty 3D ze skórzanym połyskiem */
     .wood-card {
-        background: linear-gradient(135deg, #6c584c 0%, #4a3728 100%);
-        border: 4px solid #2b1704;
-        border-radius: 12px;
+        background: linear-gradient(135deg, #2b1704 0%, #110700 100%);
+        border: 5px double #ffb703;
+        border-radius: 8px;
         padding: 25px;
         text-align: center;
-        box-shadow: 0px 15px 25px rgba(0,0,0,0.5), inset 0px 0px 20px rgba(0,0,0,0.4);
+        box-shadow: 0px 20px 35px rgba(0,0,0,0.8), inset 0px 0px 30px rgba(0,0,0,0.9);
         margin-bottom: 25px;
-        transform: perspective(500px) rotateX(2deg);
     }
     
     .wood-title {
         font-family: 'Rye', serif;
-        font-size: 1.5rem;
+        font-size: 1.6rem;
         color: #ffb703;
         letter-spacing: 2px;
         margin-bottom: 15px;
-        text-shadow: 2px 2px 0px #000;
+        text-shadow: 2px 2px 3px #000;
     }
     
+    /* Zegary Vintage */
     .old-clock {
         font-family: 'Courier New', monospace;
-        font-size: 3.2rem;
+        font-size: 3.5rem;
         font-weight: bold;
         color: #ffb703;
-        background: radial-gradient(circle, #2b1704 0%, #110700 100%);
-        padding: 15px 10px;
-        border-radius: 8px;
-        border: 3px solid #b18567;
-        box-shadow: inset 0px 0px 20px rgba(0,0,0,1), 0px 0px 15px rgba(255,183,3,0.3);
-        letter-spacing: 4px;
+        background: black;
+        padding: 15px 5px;
+        border-radius: 6px;
+        border: 2px dashed #ffb703;
+        box-shadow: inset 0px 0px 25px rgba(255,183,3,0.2);
+        letter-spacing: 5px;
     }
     
     .wood-date {
         margin-top: 15px;
-        color: #ddb892;
+        color: #b18567;
         font-size: 1.2rem;
-        letter-spacing: 1px;
+        font-weight: bold;
     }
 
-    .date-same {
-        background: linear-gradient(90deg, #556b2f, #6b8e23);
-        color: #fefae0 !important;
-        border: 2px solid #283618;
-        padding: 12px;
-        border-radius: 6px;
-        text-align: center;
-        font-weight: bold;
-        box-shadow: 3px 3px 10px rgba(0,0,0,0.2);
+    /* BĘBENEK REWOLWERU (Custom Time Picker UI) */
+    .revolver-container {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin: 25px 0;
     }
     
-    .date-yesterday {
-        background: linear-gradient(90deg, #bc6c25, #9a5316);
-        color: #fefae0 !important;
-        border: 2px solid #5c3a21;
-        padding: 12px;
-        border-radius: 6px;
+    .cylinder-slot {
+        background: radial-gradient(circle, #4a2c11 0%, #110700 100%);
+        border: 4px solid #ffb703;
+        border-radius: 50px;
+        width: 110px;
+        padding: 15px 0;
         text-align: center;
+        box-shadow: 0px 10px 20px rgba(0,0,0,0.6), inset 0px 0px 15px #000;
+    }
+    
+    .cylinder-label {
+        font-family: 'Rye', serif;
+        font-size: 0.9rem;
+        color: #ddb892;
+        margin-bottom: 8px;
+    }
+    
+    .cylinder-val {
+        font-size: 2.5rem;
         font-weight: bold;
-        box-shadow: 3px 3px 10px rgba(0,0,0,0.2);
+        color: #ffb703;
+        text-shadow: 0px 0px 10px rgba(255,183,3,0.7);
+        margin: 10px 0;
+        font-family: 'Courier New', monospace;
     }
 
-    /* Guzik - Czyste złoto z Fortu Knox */
+    /* Guziki Złotego Fortu */
     .stButton>button {
         font-family: 'Rye', serif !important;
         background: linear-gradient(180deg, #ffb703 0%, #fb8500 100%) !important;
         color: #2b1704 !important;
-        border: 3px solid #2b1704 !important;
-        border-radius: 6px !important;
-        font-size: 1.4rem !important;
-        box-shadow: 0px 6px 0px #2b1704, 0px 10px 20px rgba(0,0,0,0.3);
+        border: 3px solid #110700 !important;
+        border-radius: 4px !important;
+        font-size: 1.5rem !important;
+        box-shadow: 0px 8px 0px #110700, 0px 15px 25px rgba(0,0,0,0.5);
         width: 100%;
-        transition: all 0.1s ease;
-        padding: 10px !important;
+        padding: 12px !important;
+        text-transform: uppercase;
     }
     .stButton>button:active {
-        transform: translateY(4px);
-        box-shadow: 0px 2px 0px #2b1704;
+        transform: translateY(6px);
+        box-shadow: 0px 2px 0px #110700;
     }
     
-    /* STYLIZACJA KOWBOJSKICH SLIDERÓW (STREFA AKTYWNA) */
-    div[data-baseweb="slider"] [role="progressbar"] {
-        background-color: #8b4513 !important;
-    }
-    /* Kolor suwaka (kulka/nabój) */
-    div[data-baseweb="slider"] [thumbvalue] {
-        background-color: #ffb703 !important;
-        border: 3px solid #2b1704 !important;
-    }
-    
-    label, .stRadio p {
-        color: #2b1704 !important;
-        font-weight: bold !important;
-        font-size: 1.1rem !important;
+    /* Poprawki tekstu systemowego Streamlit */
+    .stRadio p, label {
+        color: #f4ece1 !important;
+        font-size: 1.2rem !important;
+        text-shadow: 2px 2px 2px #000;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -146,11 +158,10 @@ now_pl = datetime.now(tz_polska)
 now_ia = datetime.now(tz_iowa)
 
 # --- INTERFEJS SALOONU ---
-st.markdown("<div class='saloon-header'>🤠 SALOON CHENO 🌵</div>", unsafe_allow_html=True)
-st.markdown("<div class='saloon-sub'>Najszybszy rewolwer czasowy po tej stronie Missisipi</div>", unsafe_allow_html=True)
-st.write("---")
+st.markdown("<div class='saloon-header'>🤠 SALOON CHRONO 🌵</div>", unsafe_allow_html=True)
+st.markdown("<div class='saloon-sub'>Wersja Legendarna 999. Zbudowana na czystym prochu.</div>", unsafe_allow_html=True)
 
-# Aktualny czas w ultra kartach 3D
+# Aktualny czas w drewniano-metalowych kartach
 col1, col2 = st.columns(2)
 
 with col1:
@@ -171,69 +182,98 @@ with col2:
         </div>
     """, unsafe_allow_html=True)
 
-# --- ANALIZA DNIA ---
-st.write(" ")
-if now_pl.date() == now_ia.date():
-    st.markdown('<div class="date-same">🐎 STAN DROGI: Wszyscy jedziemy na tym samym wozie! (Ta sama data)</div>', unsafe_allow_html=True)
-elif now_ia.date() < now_pl.date():
-    st.markdown('<div class="date-yesterday">🪦 OSTRZEŻENIE: Iowa zostaje w tyle! Rancho żyje jeszcze WCZORAJSZYM DNIEM.</div>', unsafe_allow_html=True)
-
 st.write("---")
 
-# --- KALKULATOR Z LASSO (REWOLWERY CZASU) ---
-st.markdown("<h3 style='font-family:\"Rye\", serif; text-align:center; color:#4a2c11;'>🌵 ZAŁADUJ BĘBENEK CZASU</h3>", unsafe_allow_html=True)
+# --- KALKULATOR: MECHANIZM CYLINDRA REWOLWERU ---
+st.markdown("<h3 style='font-family:\"Rye\", serif; text-align:center; color:#ffb703; text-shadow: 2px 2px #000;'>🔮 OBRÓĆ BĘBENEK REWOLWERU</h3>", unsafe_allow_html=True)
 
-# Inicjalizacja domyślnych wartości w sesji
-if 'saved_hour' not in st.session_state:
-    st.session_state.saved_hour = int(datetime.now().hour)
-if 'saved_minute' not in st.session_state:
-    st.session_state.saved_minute = int(datetime.now().minute)
+# Inicjalizacja stanu bębenka w pamięci sesji
+if 'bolt_hour' not in st.session_state:
+    st.session_state.bolt_hour = int(datetime.now().hour)
+if 'bolt_minute' not in st.session_state:
+    st.session_state.bolt_minute = int(datetime.now().minute)
 
-with st.form(key='cowboy_form_sliders'):
-    wybór = st.radio(
-        "Gdzie ustawiasz wskazówki, szeryfie?", 
-        ("Podaję godzinę w Polsce", "Podaję godzinę w Iowa")
-    )
-    
-    st.write(" ")
-    # Rozbijamy wybór czasu na dwa klimatyczne suwaki
-    wybrana_godzina = st.slider("🤠 Wybierz godzinę (Bębenek H):", min_value=0, max_value=23, value=st.session_state.saved_hour, step=1)
-    wybrana_minuta = st.slider("🎯 Wybierz minutę (Celownik M):", min_value=0, max_value=59, value=st.session_state.saved_minute, step=1)
-    
-    st.write(" ")
-    submit_button = st.form_submit_button(label='🔥 WYSTRZEL I PRZELICZ')
+# Panel wyboru strefy
+wybór = st.radio(
+    "Którą strefę bierzesz na celownik, szeryfie?", 
+    ("Podaję godzinę w Polsce", "Podaję godzinę w Iowa"),
+    horizontal=True
+)
 
-if submit_button:
-    # Zapisujemy stan, żeby nie uciekał przy odświeżeniu
-    st.session_state.saved_hour = wybrana_godzina
-    st.session_state.saved_minute = wybrana_minuta
+# INTERFEJS GRAFICZNEGO BĘBENKA (Przyciski + i -)
+st.markdown("<p style='text-align:center; font-style:italic;'>Klikaj strzałki poniżej, by obrócić komory bębenka:</p>", unsafe_allow_html=True)
+
+c_col1, c_col2, c_col3, c_col4 = st.columns([2, 3, 3, 2])
+
+with c_col2:
+    # Manipulacja Godzinami
+    if st.button("▲", key="h_up"):
+        st.session_state.bolt_hour = (st.session_state.bolt_hour + 1) % 24
     
-    # Składamy czas z suwaków
-    zbudowany_czas = time(wybrana_godzina, wybrana_minuta)
+    st.markdown(f"""
+        <div class="revolver-container" style="margin:0;">
+            <div class="cylinder-slot">
+                <div class="cylinder-label">GODZINA</div>
+                <div class="cylinder-val">{st.session_state.bolt_hour:02d}</div>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    if st.button("▼", key="h_down"):
+        st.session_state.bolt_hour = (st.session_state.bolt_hour - 1) % 24
+
+with c_col3:
+    # Manipulacja Minutami
+    if st.button("▲ ", key="m_up"):
+        st.session_state.bolt_minute = (st.session_state.bolt_minute + 1) % 60
+        
+    st.markdown(f"""
+        <div class="revolver-container" style="margin:0;">
+            <div class="cylinder-slot" style="border-color: #fb8500;">
+                <div class="cylinder-label" style="color:#ffb703;">MINUTA</div>
+                <div class="cylinder-val" style="color:#fb8500; text-shadow: 0px 0px 10px rgba(251,133,0,0.7);">{st.session_state.bolt_minute:02d}</div>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    if st.button("▼ ", key="m_down"):
+        st.session_state.bolt_minute = (st.session_state.bolt_minute - 1) % 60
+
+# Dopełnienie i główny strzał przelicznika
+st.write(" ")
+st.write(" ")
+fire_trigger = st.button("🔥 WYSTRZEL I PRZELICZ STREFY")
+
+if fire_trigger:
+    # Składanie czasu z bębenków
+    zbudowany_czas = time(st.session_state.bolt_hour, st.session_state.bolt_minute)
     dzis = datetime.today().date()
     czysta_data_i_czas = datetime.combine(dzis, zbudowany_czas)
 
-    st.write("---")
+    st.markdown("<div class='wood-card' style='border-color:#fb8500;'>", unsafe_allow_html=True)
+    
     if wybór == "Podaję godzinę w Polsce":
         pl_dt = tz_polska.localize(czysta_data_i_czas)
         ia_dt = pl_dt.astimezone(tz_iowa)
         
-        st.success(f"🎯 Gdy w Polsce bije **{pl_dt.strftime('%H:%M')}**, w Iowa jest **{ia_dt.strftime('%H:%M')}**.")
+        st.subheader(f"🎯 PL {pl_dt.strftime('%H:%M')} ➔ IOWA {ia_dt.strftime('%H:%M')}")
         if ia_dt.date() == pl_dt.date():
-            st.markdown('<div class="date-same">🐎 Obie strefy lądują tego samego dnia.</div>', unsafe_allow_html=True)
-        elif ia_dt.date() < pl_dt.date():
-            st.markdown('<div class="date-yesterday">🪦 W Iowa wciąż trwa WCZORAJSZY DZIEŃ!</div>', unsafe_allow_html=True)
+            st.info("🐎 Obie strefy czasowe są tego samego dnia.")
+        else:
+            st.warning("🪦 W Iowa wciąż trwa WCZORAJSZY DZIEŃ!")
             
     else:
         ia_dt = tz_iowa.localize(czysta_data_i_czas)
         pl_dt = ia_dt.astimezone(tz_polska)
         
-        st.success(f"🎯 Gdy w Iowa wybije **{ia_dt.strftime('%H:%M')}**, w Polsce jest już **{pl_dt.strftime('%H:%M')}**.")
+        st.subheader(f"🎯 IOWA {ia_dt.strftime('%H:%M')} ➔ PL {pl_dt.strftime('%H:%M')}")
         if pl_dt.date() == ia_dt.date():
-            st.markdown('<div class="date-same">🐎 Obie strefy lądują tego samego dnia.</div>', unsafe_allow_html=True)
-        elif pl_dt.date() > ia_dt.date():
-            st.markdown('<div class="date-yesterday">🚀 Polska wyprzedza czas i jest już w JUTRZEJSZYM DNIU!</div>', unsafe_allow_html=True)
+            st.info("🐎 Obie strefy czasowe są tego samego dnia.")
+        else:
+            st.success("🚀 Polska wyprzedza czas i jest już w JUTRZEJSZYM DNIU!")
+            
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # --- STOPKA ---
 st.write("---")
-st.markdown("<center style='color:#2b1704; font-weight:bold; font-family:\"Rye\", serif;'>🚬 Gold Edition v999 Pro. Yee-haw!</center>", unsafe_allow_html=True)
+st.markdown("<center style='color:#ffb703; font-family:\"Rye\", serif; font-size:1.1rem;'>🚬 Odlano w stali. Legend Edition v999. Yee-haw!</center>", unsafe_allow_html=True)
