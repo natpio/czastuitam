@@ -1,117 +1,135 @@
 import streamlit as st
-from datetime import datetime, timedelta
+from datetime import datetime
 import pytz
 
-# --- KONFIGURACJA STRONY (ZŁOTY REWOLWER) ---
+# --- KONFIGURACJA STRONY ---
 st.set_page_config(
-    page_title="Rancho Time Rodeo",
+    page_title="Rancho Time Rodeo PRO",
     page_icon="🌵",
     layout="centered"
 )
 
-# --- PEŁNY SZPAN: ULTRA STYLIZACJA WESTERN (CSS) ---
+# --- LEVEL 999 PRO: KINOWY STYL WESTERN ---
 st.markdown("""
     <style>
-    /* Tło całej aplikacji - stary, zakurzony pergamin / piasek */
+    /* Import szeryfowej czcionki rodem z plakatów WANTED */
+    @import url('https://fonts.googleapis.com/css2?family=Rye&family=Special+Elite&display=swap');
+
     .stApp {
-        background-color: #e6ccb2;
+        background: radial-gradient(circle, #e6ccb2 0%, #b18567 100%);
         color: #3d2314;
-        font-family: 'Georgia', 'Courier New', serif;
+        font-family: 'Special Elite', monospace;
     }
     
-    /* Główne nagłówki stylizowane na napisy z Saloonu */
-    h1, h2, h3 {
-        color: #5c3a21 !important;
-        font-family: 'Impact', 'Georgia', sans-serif;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-        text-shadow: 2px 2px 0px #b18567, 4px 4px 0px #3d2314;
+    /* Naprawiony i podkręcony nagłówek Saloonu */
+    .saloon-header {
+        font-family: 'Rye', serif;
+        color: #4a2c11;
         text-align: center;
+        font-size: 3rem;
+        margin-top: -20px;
+        margin-bottom: 5px;
+        text-shadow: 3px 3px 0px #ffb703, 5px 5px 0px #2b1704;
+        line-height: 1.2;
     }
     
-    /* Karty z czasem - wyglądają jak stare, drewniane deski obite skórą */
+    .saloon-sub {
+        text-align: center;
+        font-size: 1.1rem;
+        font-style: italic;
+        color: #5c3a21;
+        letter-spacing: 2px;
+        margin-bottom: 30px;
+    }
+    
+    /* Karty 3D: Drewno, skóra i metalowe nity */
     .wood-card {
-        background-color: #7f5539;
-        border: 4px solid #4a2c11;
-        border-radius: 4px;
+        background: linear-gradient(135deg, #6c584c 0%, #4a3728 100%);
+        border: 4px solid #2b1704;
+        border-radius: 12px;
         padding: 25px;
         text-align: center;
-        box-shadow: inset 0px 0px 15px rgba(0,0,0,0.6), 8px 8px 0px #3d2314;
+        box-shadow: 0px 15px 25px rgba(0,0,0,0.5), inset 0px 0px 20px rgba(0,0,0,0.4);
         margin-bottom: 25px;
+        transform: perspective(500px) rotateX(2deg);
     }
     
     .wood-title {
-        font-size: 1.3rem;
-        font-weight: bold;
-        color: #ede0d4;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        margin-bottom: 10px;
-        border-bottom: 2px dashed #9c6644;
-        padding-bottom: 5px;
+        font-family: 'Rye', serif;
+        font-size: 1.5rem;
+        color: #ffb703;
+        letter-spacing: 2px;
+        margin-bottom: 15px;
+        text-shadow: 2px 2px 0px #000;
     }
     
-    /* Wygląd STAREGO ZEGRU (Wypalone cyfry) */
+    /* KOLEKCJONERSKI ZEGAREK: Głęboki blask vintage i cyfrowy klimat */
     .old-clock {
         font-family: 'Courier New', monospace;
-        font-size: 2.8rem;
+        font-size: 3.2rem;
         font-weight: bold;
         color: #ffb703;
-        background-color: #2b1704;
-        padding: 12px;
-        border-radius: 3px;
-        border: 2px solid #b18567;
-        box-shadow: inset 0px 0px 10px rgba(0,0,0,0.9);
-        letter-spacing: 3px;
+        background: radial-gradient(circle, #2b1704 0%, #110700 100%);
+        padding: 15px 10px;
+        border-radius: 8px;
+        border: 3px solid #b18567;
+        box-shadow: inset 0px 0px 20px rgba(0,0,0,1), 0px 0px 15px rgba(255,183,3,0.3);
+        letter-spacing: 4px;
     }
     
     .wood-date {
-        margin-top: 12px;
+        margin-top: 15px;
         color: #ddb892;
-        font-size: 1.1rem;
-        font-weight: bold;
-        font-style: italic;
+        font-size: 1.2rem;
+        letter-spacing: 1px;
     }
 
-    /* Banery informacyjne o dacie */
+    /* Banery informacyjne o stanie drogi */
     .date-same {
-        background-color: #606c38 !important;
+        background: linear-gradient(90deg, #556b2f, #6b8e23);
         color: #fefae0 !important;
         border: 2px solid #283618;
-        padding: 10px;
-        border-radius: 4px;
+        padding: 12px;
+        border-radius: 6px;
         text-align: center;
         font-weight: bold;
+        box-shadow: 3px 3px 10px rgba(0,0,0,0.2);
     }
     
     .date-yesterday {
-        background-color: #bc6c25 !important;
+        background: linear-gradient(90deg, #bc6c25, #9a5316);
         color: #fefae0 !important;
-        border: 2px solid #dda15e;
-        padding: 10px;
-        border-radius: 4px;
+        border: 2px solid #5c3a21;
+        padding: 12px;
+        border-radius: 6px;
         text-align: center;
         font-weight: bold;
-        animation: blinker 1.5s linear infinite;
+        box-shadow: 3px 3px 10px rgba(0,0,0,0.2);
     }
 
-    /* Kowbojski przycisk */
+    /* Guzik - Czyste złoto z Fortu Knox */
     .stButton>button {
-        background-color: #4a2c11 !important;
-        color: #ffb703 !important;
-        border: 3px solid #ffb703 !important;
-        border-radius: 0px !important;
-        font-weight: bold !important;
-        font-size: 1.2rem !important;
-        text-transform: uppercase;
-        box-shadow: 5px 5px 0px #3d2314;
+        font-family: 'Rye', serif !important;
+        background: linear-gradient(180deg, #ffb703 0%, #fb8500 100%) !important;
+        color: #2b1704 !important;
+        border: 3px solid #2b1704 !important;
+        border-radius: 6px !important;
+        font-size: 1.4rem !important;
+        box-shadow: 0px 6px 0px #2b1704, 0px 10px 20px rgba(0,0,0,0.3);
         width: 100%;
-        transition: 0.2s;
+        transition: all 0.1s ease;
+        padding: 10px !important;
     }
-    .stButton>button:hover {
-        background-color: #ffb703 !important;
-        color: #4a2c11 !important;
-        box-shadow: 2px 2px 0px #3d2314;
+    .stButton>button:active {
+        transform: translateY(4px);
+        box-shadow: 0px 2px 0px #2b1704;
+    }
+    
+    /* Poprawa widoczności etykiet formularzy */
+    label, .stRadio p {
+        color: #2b1704 !important;
+        font-weight: bold !important;
+        font-size: 1.1rem !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -124,17 +142,17 @@ now_pl = datetime.now(tz_polska)
 now_ia = datetime.now(tz_iowa)
 
 # --- INTERFEJS SALOONU ---
-st.markdown("<h1>🤠 SALOON TIME CHRONO 🌵</h1>")
-st.markdown("<p style='text-align:center; font-style:italic; color:#5c3a21;'>Najszybszy zegar po tej stronie rzeki Missisipi</p>", unsafe_allow_html=True)
+st.markdown("<div class='saloon-header'>🤠 SALOON CHRONO 🌵</div>", unsafe_allow_html=True)
+st.markdown("<div class='saloon-sub'>Najszybszy rewolwer czasowy po tej stronie Missisipi</div>", unsafe_allow_html=True)
 st.write("---")
 
-# Aktualny stary zegar w drewnianych kartach
+# Aktualny czas w ultra kartach 3D
 col1, col2 = st.columns(2)
 
 with col1:
     st.markdown(f"""
         <div class="wood-card">
-            <div class="wood-title">🪓 POLSKA (Warszawa)</div>
+            <div class="wood-title">🪓 POLSKA</div>
             <div class="old-clock">{now_pl.strftime('%H:%M:%S')}</div>
             <div class="wood-date">📅 {now_pl.strftime('%d.%m.%Y')}</div>
         </div>
@@ -143,69 +161,62 @@ with col1:
 with col2:
     st.markdown(f"""
         <div class="wood-card">
-            <div class="wood-title">🦅 IOWA (Rancho)</div>
+            <div class="wood-title">🦅 IOWA</div>
             <div class="old-clock">{now_ia.strftime('%H:%M:%S')}</div>
             <div class="wood-date">📅 {now_ia.strftime('%d.%m.%Y')}</div>
         </div>
     """, unsafe_allow_html=True)
 
-# --- ANALIZA DROGI W CZASIE (CZY TO TA SAMA DATA?) ---
+# --- ANALIZA DNIA ---
 st.write(" ")
 if now_pl.date() == now_ia.date():
-    st.markdown('<div class="date-same">🐎 STAN DROGI: Wszyscy jedziemy na tym samym wozie! (Ta sama data w PL i Iowa)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="date-same">🐎 STAN DROGI: Wszyscy jedziemy na tym samym wozie! (Ta sama data)</div>', unsafe_allow_html=True)
 elif now_ia.date() < now_pl.date():
-    st.markdown('<div class="date-yesterday">🪦 UWAGA: Iowa zostaje w tyle! Rancho żyje jeszcze WCZORAJSZYM DNIEM.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="date-yesterday">🪦 OSTRZEŻENIE: Iowa zostaje w tyle! Rancho żyje jeszcze WCZORAJSZYM DNIEM.</div>', unsafe_allow_html=True)
 
 st.write("---")
 
-# --- KALKULATOR Z LASSO (FORMULARZ) ---
-st.markdown("<h3>🌵 Złap czas na lasso</h3>")
+# --- KALKULATOR Z LASSO ---
+st.markdown("<h3 style='font-family:\"Rye\", serif; text-align:center; color:#4a2c11;'>🌵 ZŁAP CZAS NA LASSO</h3>", unsafe_allow_html=True)
 
 if 'saved_time' not in st.session_state:
     st.session_state.saved_time = datetime.now().time()
 
-with st.form(key='cowboy_form'):
+with st.form(key='cowboy_form_999'):
     wybór = st.radio(
         "Gdzie ustawiasz wskazówki, szeryfie?", 
         ("Podaję godzinę w Polsce", "Podaję godzinę w Iowa")
     )
     
-    wybrany_czas = st.time_input("Ustaw mechanizm starego zegara:", value=st.session_state.saved_time)
-    
-    submit_button = st.form_submit_button(label='🔥 PRZELICZ I WYSTRZEL')
+    wybrany_czas = st.time_input("Ustaw mechanizm:", value=st.session_state.saved_time)
+    submit_button = st.form_submit_button(label='🔥 WYSTRZEL I PRZELICZ')
 
-# Obliczenia po pociągnięciu za spust
 if submit_button:
     st.session_state.saved_time = wybrany_czas
     dzis = datetime.today().date()
     czysta_data_i_czas = datetime.combine(dzis, wybrany_czas)
 
+    st.write("---")
     if wybór == "Podaję godzinę w Polsce":
         pl_dt = tz_polska.localize(czysta_data_i_czas)
         ia_dt = pl_dt.astimezone(tz_iowa)
         
-        st.write("---")
-        st.info(f"🎯 Gdy w Polsce bije **{pl_dt.strftime('%H:%M')}**, w Iowa jest **{ia_dt.strftime('%H:%M')}**.")
-        
-        # Porównanie dat dla wybranego czasu
+        st.success(f"🎯 Gdy w Polsce bije **{pl_dt.strftime('%H:%M')}**, w Iowa jest **{ia_dt.strftime('%H:%M')}**.")
         if ia_dt.date() == pl_dt.date():
-            st.markdown('`🐎 Wybrany czas wypada tego samego dnia w obu miejscach.`')
+            st.markdown('<div class="date-same">🐎 Obie strefy lądują tego samego dnia.</div>', unsafe_allow_html=True)
         elif ia_dt.date() < pl_dt.date():
-            st.markdown('`🪦 Wybrany czas oznacza, że w Iowa cofamy się do WCZORAJSZEGO DNIA!`')
+            st.markdown('<div class="date-yesterday">🪦 W Iowa wciąż trwa WCZORAJSZY DZIEŃ!</div>', unsafe_allow_html=True)
             
     else:
         ia_dt = tz_iowa.localize(czysta_data_i_czas)
         pl_dt = ia_dt.astimezone(tz_polska)
         
-        st.write("---")
-        st.info(f"🎯 Gdy w Iowa wybije **{ia_dt.strftime('%H:%M')}**, w Polsce zegary pokazują już **{pl_dt.strftime('%H:%M')}**.")
-        
-        # Porównanie dat dla wybranego czasu
+        st.success(f"🎯 Gdy w Iowa wybije **{ia_dt.strftime('%H:%M')}**, w Polsce jest już **{pl_dt.strftime('%H:%M')}**.")
         if pl_dt.date() == ia_dt.date():
-            st.markdown('`🐎 Wybrany czas wypada tego samego dnia w obu miejscach.`')
+            st.markdown('<div class="date-same">🐎 Obie strefy lądują tego samego dnia.</div>', unsafe_allow_html=True)
         elif pl_dt.date() > ia_dt.date():
-            st.markdown('`🚀 Gdy w Iowa trwa ten moment, w Polsce kowboje są już w JUTRZEJSZYM DNIU!`')
+            st.markdown('<div class="date-yesterday">🚀 Polska wyprzedza czas i jest już w JUTRZEJSZYM DNIU!</div>', unsafe_allow_html=True)
 
-# --- STOPKA Z SALOONU ---
+# --- STOPKA ---
 st.write("---")
-st.markdown("<center style='color:#5c3a21; font-weight:bold;'>🚬 Opracowano na dzikim rancho. Nie strzelać do pianisty. </center>", unsafe_allow_html=True)
+st.markdown("<center style='color:#2b1704; font-weight:bold; font-family:\"Rye\", serif;'>🚬 Gold Edition v999 Pro. Yee-haw!</center>", unsafe_allow_html=True)
