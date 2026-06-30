@@ -5,7 +5,7 @@ import pytz
 
 # --- KONFIGURACJA STRONY ---
 st.set_page_config(
-    page_title="Rancho Time Rodeo COSMIC PRO",
+    page_title="Rancho Time Rodeo GOD MODE",
     page_icon="🤠",
     layout="centered"
 )
@@ -161,7 +161,7 @@ now_ia = datetime.now(tz_iowa)
 
 # --- INTERFEJS SALOONU ---
 st.markdown("<div class='saloon-header'>🤠 SALOON CHRONO 🌵</div>", unsafe_allow_html=True)
-st.markdown("<div class='saloon-sub'>Kosmiczny Poziom Legendarny. Ziemia wiruje na rozkaz szeryfa.</div>", unsafe_allow_html=True)
+st.markdown("<div class='saloon-sub'>Poziom GOD MODE. Strzały między kontynentami.</div>", unsafe_allow_html=True)
 
 # Aktualny czas w drewniano-metalowych kartach
 col1, col2 = st.columns(2)
@@ -283,16 +283,24 @@ if st.session_state.trigger_spin:
             
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # --- EMISJA KULI ZIEMSKIEJ HTML5 + WEBGL (Z LOKALIZACJAMI) ---
+    # --- EMISJA KULI ZIEMSKIEJ HTML5 + WEBGL (Z ANIMOWANĄ TRAJEKTORIĄ) ---
     globe_html = """
     <div id="globeArea" style="display:flex; justify-content:center; background:transparent;"></div>
     <script src="https://unpkg.com/globe.gl"></script>
     <script>
+        // Punkty miast
         const ranchos = [
             { name: '🇵🇱 Poznań', lat: 52.4064, lng: 16.9252, color: '#ffb703', size: 1.2 },
             { name: '🇺🇸 Des Moines (Iowa)', lat: 41.5868, lng: -93.6250, color: '#fb8500', size: 1.5 },
             { name: '🇺🇸 Chicago', lat: 41.8781, lng: -87.6298, color: '#ddb892', size: 1.0 }
         ];
+
+        // Trajektoria lotu pocisku (Poznań -> Iowa)
+        const bulletTrajectory = [{
+            startLat: 52.4064, startLng: 16.9252,
+            endLat: 41.5868, endLng: -93.6250,
+            color: ['#ffb703', '#e63946'] // Złoto przechodzące w krwistą czerwień
+        }];
 
         const myGlobe = Globe()
         (document.getElementById('globeArea'))
@@ -302,6 +310,7 @@ if st.session_state.trigger_spin:
         .backgroundImageUrl('')
         .backgroundColor('rgba(0,0,0,0)')
         
+        // Renderowanie miast
         .labelsData(ranchos)
         .labelLat(d => d.lat)
         .labelLng(d => d.lng)
@@ -311,8 +320,23 @@ if st.session_state.trigger_spin:
         .labelColor(d => d.color)
         .labelResolution(3)
         
+        // Renderowanie płonącego łuku (strzału)
+        .arcsData(bulletTrajectory)
+        .arcStartLat(d => d.startLat)
+        .arcStartLng(d => d.startLng)
+        .arcEndLat(d => d.endLat)
+        .arcEndLng(d => d.endLng)
+        .arcColor(d => d.color)
+        .arcDashLength(0.5)        // Długość "pocisku"
+        .arcDashGap(0.1)           // Przerwa za pociskiem
+        .arcDashAnimateTime(1500)  // Szybkość lotu (1.5 sekundy)
+        .arcAltitude(0.4)          // Wysokość łuku nad Ziemią
+        .arcStroke(1.2)            // Grubość wiązki
+        
+        // Ustawienie początkowe i widok na Europę
         .pointOfView({ lat: 35, lng: -35, altitude: 2.5 }, 0);
         
+        // Kinowy najazd na linię strzału przez Atlantyk
         setTimeout(() => {
             myGlobe.pointOfView({ lat: 45, lng: -38, altitude: 1.5 }, 2000);
         }, 200);
@@ -322,4 +346,4 @@ if st.session_state.trigger_spin:
 
 # --- STOPKA ---
 st.write("---")
-st.markdown("<center style='color:#ffb703; font-family:\"Rye\", serif; font-size:1.1rem;'>🚬 Cosmic Scale Edition v999. Wszystkie rewolwery załadowane. Yee-haw!</center>", unsafe_allow_html=True)
+st.markdown("<center style='color:#ffb703; font-family:\"Rye\", serif; font-size:1.1rem;'>🚬 GOD MODE Edition v999. Wszystkie rewolwery załadowane. Yee-haw!</center>", unsafe_allow_html=True)
