@@ -1,5 +1,5 @@
 import streamlit as st
-from datetime import datetime
+from datetime import datetime, time
 import pytz
 
 # --- KONFIGURACJA STRONY ---
@@ -9,10 +9,9 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- LEVEL 999 PRO: KINOWY STYL WESTERN ---
+# --- LEVEL 999 PRO: KINOWY STYL WESTERN + MODYFIKACJA SLIDERÓW ---
 st.markdown("""
     <style>
-    /* Import szeryfowej czcionki rodem z plakatów WANTED */
     @import url('https://fonts.googleapis.com/css2?family=Rye&family=Special+Elite&display=swap');
 
     .stApp {
@@ -21,7 +20,6 @@ st.markdown("""
         font-family: 'Special Elite', monospace;
     }
     
-    /* Naprawiony i podkręcony nagłówek Saloonu */
     .saloon-header {
         font-family: 'Rye', serif;
         color: #4a2c11;
@@ -42,7 +40,6 @@ st.markdown("""
         margin-bottom: 30px;
     }
     
-    /* Karty 3D: Drewno, skóra i metalowe nity */
     .wood-card {
         background: linear-gradient(135deg, #6c584c 0%, #4a3728 100%);
         border: 4px solid #2b1704;
@@ -63,7 +60,6 @@ st.markdown("""
         text-shadow: 2px 2px 0px #000;
     }
     
-    /* KOLEKCJONERSKI ZEGAREK: Głęboki blask vintage i cyfrowy klimat */
     .old-clock {
         font-family: 'Courier New', monospace;
         font-size: 3.2rem;
@@ -84,7 +80,6 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
-    /* Banery informacyjne o stanie drogi */
     .date-same {
         background: linear-gradient(90deg, #556b2f, #6b8e23);
         color: #fefae0 !important;
@@ -125,7 +120,16 @@ st.markdown("""
         box-shadow: 0px 2px 0px #2b1704;
     }
     
-    /* Poprawa widoczności etykiet formularzy */
+    /* STYLIZACJA KOWBOJSKICH SLIDERÓW (STREFA AKTYWNA) */
+    div[data-baseweb="slider"] [role="progressbar"] {
+        background-color: #8b4513 !important;
+    }
+    /* Kolor suwaka (kulka/nabój) */
+    div[data-baseweb="slider"] [thumbvalue] {
+        background-color: #ffb703 !important;
+        border: 3px solid #2b1704 !important;
+    }
+    
     label, .stRadio p {
         color: #2b1704 !important;
         font-weight: bold !important;
@@ -142,7 +146,7 @@ now_pl = datetime.now(tz_polska)
 now_ia = datetime.now(tz_iowa)
 
 # --- INTERFEJS SALOONU ---
-st.markdown("<div class='saloon-header'>🤠 SALOON CHRONO 🌵</div>", unsafe_allow_html=True)
+st.markdown("<div class='saloon-header'>🤠 SALOON CHENO 🌵</div>", unsafe_allow_html=True)
 st.markdown("<div class='saloon-sub'>Najszybszy rewolwer czasowy po tej stronie Missisipi</div>", unsafe_allow_html=True)
 st.write("---")
 
@@ -176,25 +180,38 @@ elif now_ia.date() < now_pl.date():
 
 st.write("---")
 
-# --- KALKULATOR Z LASSO ---
-st.markdown("<h3 style='font-family:\"Rye\", serif; text-align:center; color:#4a2c11;'>🌵 ZŁAP CZAS NA LASSO</h3>", unsafe_allow_html=True)
+# --- KALKULATOR Z LASSO (REWOLWERY CZASU) ---
+st.markdown("<h3 style='font-family:\"Rye\", serif; text-align:center; color:#4a2c11;'>🌵 ZAŁADUJ BĘBENEK CZASU</h3>", unsafe_allow_html=True)
 
-if 'saved_time' not in st.session_state:
-    st.session_state.saved_time = datetime.now().time()
+# Inicjalizacja domyślnych wartości w sesji
+if 'saved_hour' not in st.session_state:
+    st.session_state.saved_hour = int(datetime.now().hour)
+if 'saved_minute' not in st.session_state:
+    st.session_state.saved_minute = int(datetime.now().minute)
 
-with st.form(key='cowboy_form_999'):
+with st.form(key='cowboy_form_sliders'):
     wybór = st.radio(
         "Gdzie ustawiasz wskazówki, szeryfie?", 
         ("Podaję godzinę w Polsce", "Podaję godzinę w Iowa")
     )
     
-    wybrany_czas = st.time_input("Ustaw mechanizm:", value=st.session_state.saved_time)
+    st.write(" ")
+    # Rozbijamy wybór czasu na dwa klimatyczne suwaki
+    wybrana_godzina = st.slider("🤠 Wybierz godzinę (Bębenek H):", min_value=0, max_value=23, value=st.session_state.saved_hour, step=1)
+    wybrana_minuta = st.slider("🎯 Wybierz minutę (Celownik M):", min_value=0, max_value=59, value=st.session_state.saved_minute, step=1)
+    
+    st.write(" ")
     submit_button = st.form_submit_button(label='🔥 WYSTRZEL I PRZELICZ')
 
 if submit_button:
-    st.session_state.saved_time = wybrany_czas
+    # Zapisujemy stan, żeby nie uciekał przy odświeżeniu
+    st.session_state.saved_hour = wybrana_godzina
+    st.session_state.saved_minute = wybrana_minuta
+    
+    # Składamy czas z suwaków
+    zbudowany_czas = time(wybrana_godzina, wybrana_minuta)
     dzis = datetime.today().date()
-    czysta_data_i_czas = datetime.combine(dzis, wybrany_czas)
+    czysta_data_i_czas = datetime.combine(dzis, zbudowany_czas)
 
     st.write("---")
     if wybór == "Podaję godzinę w Polsce":
