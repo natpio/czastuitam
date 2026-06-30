@@ -1,20 +1,21 @@
 import streamlit as st
+import streamlit.components.v1 as components
 from datetime import datetime, time
 import pytz
 
 # --- KONFIGURACJA STRONY ---
 st.set_page_config(
-    page_title="Rancho Time Rodeo ULTRA PRO",
+    page_title="Rancho Time Rodeo COSMIC PRO",
     page_icon="🤠",
     layout="centered"
 )
 
-# --- ARCHITEKTURA DZIKIEGO ZACHODU (CSS) ---
+# --- ARCHITEKTURA SALOONU & KOSMOSU (CSS) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Rye&family=Special+Elite&display=swap');
 
-    /* TŁO: Prawdziwa faktura starych, spalonych słońcem desek saloonu */
+    /* TŁO: Stare deski saloonu */
     .stApp {
         background-color: #3a2212;
         background-image: 
@@ -26,7 +27,6 @@ st.markdown("""
         font-family: 'Special Elite', monospace;
     }
     
-    /* Naprawiony i podkręcony nagłówek Saloonu */
     .saloon-header {
         font-family: 'Rye', serif;
         color: #ffb703;
@@ -48,7 +48,6 @@ st.markdown("""
         text-shadow: 1px 1px 2px #000;
     }
     
-    /* Główne karty 3D ze skórzanym połyskiem */
     .wood-card {
         background: linear-gradient(135deg, #2b1704 0%, #110700 100%);
         border: 5px double #ffb703;
@@ -68,7 +67,6 @@ st.markdown("""
         text-shadow: 2px 2px 3px #000;
     }
     
-    /* Zegary Vintage */
     .old-clock {
         font-family: 'Courier New', monospace;
         font-size: 3.5rem;
@@ -89,7 +87,6 @@ st.markdown("""
         font-weight: bold;
     }
 
-    /* BĘBENEK REWOLWERU (Custom Time Picker UI) */
     .revolver-container {
         display: flex;
         justify-content: center;
@@ -123,7 +120,6 @@ st.markdown("""
         font-family: 'Courier New', monospace;
     }
 
-    /* Guziki Złotego Fortu */
     .stButton>button {
         font-family: 'Rye', serif !important;
         background: linear-gradient(180deg, #ffb703 0%, #fb8500 100%) !important;
@@ -141,7 +137,6 @@ st.markdown("""
         box-shadow: 0px 2px 0px #110700;
     }
     
-    /* Poprawki tekstu systemowego Streamlit */
     .stRadio p, label {
         color: #f4ece1 !important;
         font-size: 1.2rem !important;
@@ -157,13 +152,11 @@ tz_iowa = pytz.timezone('US/Central')
 now_pl = datetime.now(tz_polska)
 now_ia = datetime.now(tz_iowa)
 
-# --- INTERFEJS SALOONU ---
+# --- INTERFEJS ---
 st.markdown("<div class='saloon-header'>🤠 SALOON CHRONO 🌵</div>", unsafe_allow_html=True)
-st.markdown("<div class='saloon-sub'>Wersja Legendarna 999. Zbudowana na czystym prochu.</div>", unsafe_allow_html=True)
+st.markdown("<div class='saloon-sub'>Kosmiczny Poziom Legendarny. Ziemia wiruje na rozkaz szeryfa.</div>", unsafe_allow_html=True)
 
-# Aktualny czas w drewniano-metalowych kartach
 col1, col2 = st.columns(2)
-
 with col1:
     st.markdown(f"""
         <div class="wood-card">
@@ -184,96 +177,88 @@ with col2:
 
 st.write("---")
 
-# --- KALKULATOR: MECHANIZM CYLINDRA REWOLWERU ---
+# --- BĘBENEK REWOLWERU ---
 st.markdown("<h3 style='font-family:\"Rye\", serif; text-align:center; color:#ffb703; text-shadow: 2px 2px #000;'>🔮 OBRÓĆ BĘBENEK REWOLWERU</h3>", unsafe_allow_html=True)
 
-# Inicjalizacja stanu bębenka w pamięci sesji
 if 'bolt_hour' not in st.session_state:
     st.session_state.bolt_hour = int(datetime.now().hour)
 if 'bolt_minute' not in st.session_state:
     st.session_state.bolt_minute = int(datetime.now().minute)
+if 'trigger_spin' not in st.session_state:
+    st.session_state.trigger_spin = False
 
-# Panel wyboru strefy
 wybór = st.radio(
     "Którą strefę bierzesz na celownik, szeryfie?", 
     ("Podaję godzinę w Polsce", "Podaję godzinę w Iowa"),
     horizontal=True
 )
 
-# INTERFEJS GRAFICZNEGO BĘBENKA (Przyciski + i -)
-st.markdown("<p style='text-align:center; font-style:italic;'>Klikaj strzałki poniżej, by obrócić komory bębenka:</p>", unsafe_allow_html=True)
-
 c_col1, c_col2, c_col3, c_col4 = st.columns([2, 3, 3, 2])
 
 with c_col2:
-    # Manipulacja Godzinami
     if st.button("▲", key="h_up"):
         st.session_state.bolt_hour = (st.session_state.bolt_hour + 1) % 24
-    
-    st.markdown(f"""
-        <div class="revolver-container" style="margin:0;">
-            <div class="cylinder-slot">
-                <div class="cylinder-label">GODZINA</div>
-                <div class="cylinder-val">{st.session_state.bolt_hour:02d}</div>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
-    
+        st.session_state.trigger_spin = False
+    st.markdown(f'<div class="revolver-container" style="margin:0;"><div class="cylinder-slot"><div class="cylinder-label">GODZINA</div><div class="cylinder-val">{st.session_state.bolt_hour:02d}</div></div></div>', unsafe_allow_html=True)
     if st.button("▼", key="h_down"):
         st.session_state.bolt_hour = (st.session_state.bolt_hour - 1) % 24
+        st.session_state.trigger_spin = False
 
 with c_col3:
-    # Manipulacja Minutami
     if st.button("▲ ", key="m_up"):
         st.session_state.bolt_minute = (st.session_state.bolt_minute + 1) % 60
-        
-    st.markdown(f"""
-        <div class="revolver-container" style="margin:0;">
-            <div class="cylinder-slot" style="border-color: #fb8500;">
-                <div class="cylinder-label" style="color:#ffb703;">MINUTA</div>
-                <div class="cylinder-val" style="color:#fb8500; text-shadow: 0px 0px 10px rgba(251,133,0,0.7);">{st.session_state.bolt_minute:02d}</div>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
-    
+        st.session_state.trigger_spin = False
+    st.markdown(f'<div class="revolver-container" style="margin:0;"><div class="cylinder-slot" style="border-color:#fb8500;"><div class="cylinder-label" style="color:#ffb703;">MINUTA</div><div class="cylinder-val" style="color:#fb8500;">{st.session_state.bolt_minute:02d}</div></div></div>', unsafe_allow_html=True)
     if st.button("▼ ", key="m_down"):
         st.session_state.bolt_minute = (st.session_state.bolt_minute - 1) % 60
+        st.session_state.trigger_spin = False
 
-# Dopełnienie i główny strzał przelicznika
 st.write(" ")
-st.write(" ")
-fire_trigger = st.button("🔥 WYSTRZEL I PRZELICZ STREFY")
+fire_trigger = st.button("🔥 WYSTRZEL I OBRÓĆ GLOBUS")
 
 if fire_trigger:
-    # Składanie czasu z bębenków
-    zbudowany_czas = time(st.session_state.bolt_hour, st.session_state.bolt_minute)
-    dzis = datetime.today().date()
-    czysta_data_i_czas = datetime.combine(dzis, zbudowany_czas)
+    st.session_state.trigger_spin = True
 
+# --- LOGIKA WYLICZEŃ I TRÓJWYMIAROWY GLOBUS ---
+zbudowany_czas = time(st.session_state.bolt_hour, st.session_state.bolt_minute)
+dzis = datetime.today().date()
+czysta_data_i_czas = datetime.combine(dzis, zbudowany_czas)
+
+if st.session_state.trigger_spin:
     st.markdown("<div class='wood-card' style='border-color:#fb8500;'>", unsafe_allow_html=True)
-    
     if wybór == "Podaję godzinę w Polsce":
         pl_dt = tz_polska.localize(czysta_data_i_czas)
         ia_dt = pl_dt.astimezone(tz_iowa)
-        
         st.subheader(f"🎯 PL {pl_dt.strftime('%H:%M')} ➔ IOWA {ia_dt.strftime('%H:%M')}")
-        if ia_dt.date() == pl_dt.date():
-            st.info("🐎 Obie strefy czasowe są tego samego dnia.")
-        else:
-            st.warning("🪦 W Iowa wciąż trwa WCZORAJSZY DZIEŃ!")
-            
     else:
         ia_dt = tz_iowa.localize(czysta_data_i_czas)
         pl_dt = ia_dt.astimezone(tz_polska)
-        
         st.subheader(f"🎯 IOWA {ia_dt.strftime('%H:%M')} ➔ PL {pl_dt.strftime('%H:%M')}")
-        if pl_dt.date() == ia_dt.date():
-            st.info("🐎 Obie strefy czasowe są tego samego dnia.")
-        else:
-            st.success("🚀 Polska wyprzedza czas i jest już w JUTRZEJSZYM DNIU!")
-            
     st.markdown("</div>", unsafe_allow_html=True)
+
+    # --- EMISJA KULI ZIEMSKIEJ HTML5 + WEBGL ---
+    # Kod JS wymusza dynamiczne obrócenie kamery na środek Atlantyku (pomiędzy Polskę a USA)
+    globe_html = """
+    <div id="globeArea" style="display:flex; justify-content:center; background:transparent;"></div>
+    <script src="https://unpkg.com/globe.gl"></script>
+    <script>
+        const myGlobe = Globe()
+        (document.getElementById('globeArea'))
+        .width(650)
+        .height(350)
+        .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
+        .backgroundImageUrl('')
+        .backgroundColor('rgba(0,0,0,0)')
+        .pointOfView({ lat: 35, lng: -30, altitude: 2.2 }, 0); // Start widoku na Atlantyk
+        
+        // Animowany, płynny obrót (efekt strzału i namierzania)
+        setTimeout(() => {
+            myGlobe.pointOfView({ lat: 40, lng: -45, altitude: 1.6 }, 1800);
+        }, 200);
+    </script>
+    """
+    components.html(globe_html, height=360)
 
 # --- STOPKA ---
 st.write("---")
-st.markdown("<center style='color:#ffb703; font-family:\"Rye\", serif; font-size:1.1rem;'>🚬 Odlano w stali. Legend Edition v999. Yee-haw!</center>", unsafe_allow_html=True)
+st.markdown("<center style='color:#ffb703; font-family:\"Rye\", serif; font-size:1.1rem;'>🚬 Cosmic Scale Edition v999. Yee-haw!</center>", unsafe_allow_html=True)
